@@ -117,7 +117,7 @@ function buildBook(owner, repo, branch, path) {
   const folderSegments = path.split("/").slice(0, -1);
   const shelf = folderSegments.length > 0 ? folderSegments.join(" / ") : "General";
 
-  const url = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${path
+  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path
     .split("/")
     .map(encodeURIComponent)
     .join("/")}`;
@@ -329,13 +329,13 @@ function openReader(book) {
   document.getElementById("reader-title").textContent = book.title;
   document.getElementById("reader-path").textContent = book.path;
   document.getElementById("download-link").href = book.url;
+  document.getElementById("open-tab-link").href = book.url;
 
   const finishedBtn = document.getElementById("mark-finished-btn");
   updateFinishedBtn(finishedBtn, book.path);
 
   const frame = document.getElementById("reader-frame");
-  const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(book.url)}`;
-  frame.src = viewerUrl;
+  frame.src = `${book.url}#toolbar=1&view=FitH`;
 
   document.getElementById("reader-overlay").hidden = false;
   document.body.style.overflow = "hidden";
