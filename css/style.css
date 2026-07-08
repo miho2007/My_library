@@ -428,6 +428,22 @@ body{
   flex:1; width:100%; border:0; background: #2b2b2b;
 }
 
+.reader-status{
+  flex:1;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap: 14px;
+  color: var(--ink-dim);
+  text-align:center;
+  padding: 20px;
+}
+.reader-status p{ margin:0; font-size: 14px; max-width: 380px; line-height:1.6; }
+.reader-status .reader-error-title{
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
 /* ---------------- responsive ---------------- */
 
 @media (max-width: 640px){
