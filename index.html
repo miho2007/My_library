@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Stacks — Your Library</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="site-head">
+  <div class="head-inner">
+    <div class="brand">
+      <span class="brand-mark">§</span>
+      <div class="brand-text">
+        <h1>The Stacks</h1>
+        <p class="tagline">Your books, wherever you are.</p>
+      </div>
+    </div>
+    <div class="head-stats" id="head-stats" aria-live="polite"></div>
+  </div>
+</header>
+
+<main class="content">
+
+  <section class="controls" id="controls" hidden>
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="search" placeholder="Search your shelves…" autocomplete="off">
+    </div>
+    <div class="filter-chips" id="filter-chips">
+      <button class="chip is-active" data-filter="all">All</button>
+      <button class="chip" data-filter="reading">Reading</button>
+      <button class="chip" data-filter="finished">Finished</button>
+      <button class="chip" data-filter="unread">Unread</button>
+    </div>
+  </section>
+
+  <section id="shelf-area">
+    <div class="state-panel" id="loading-state">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Walking the stacks…</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-foot">
+  <p>Reading positions are kept only in this browser. Add a PDF to your repo and refresh to see it appear on the shelf.</p>
+</footer>
+
+<!-- Reader Modal -->
+<div class="reader-overlay" id="reader-overlay" hidden>
+  <div class="reader-shell">
+    <div class="reader-bar">
+      <div class="reader-title-wrap">
+        <span class="reader-title" id="reader-title">—</span>
+        <span class="reader-path" id="reader-path"></span>
+      </div>
+      <div class="reader-actions">
+        <button class="btn btn-ghost" id="mark-finished-btn">Mark as finished</button>
+        <a class="btn btn-ghost" id="download-link" href="#" target="_blank" rel="noopener">Download</a>
+        <button class="btn btn-close" id="close-reader" aria-label="Close reader">✕</button>
+      </div>
+    </div>
+    <iframe id="reader-frame" title="PDF reader" loading="lazy"></iframe>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
