@@ -318,8 +318,9 @@ function wireControls() {
 /* ---------------- reader modal ---------------- */
 
 let currentBook = null;
+const blobCache = new Map(); // path -> object URL, so reopening a book is instant
 
-function openReader(book) {
+async function openReader(book) {
   currentBook = book;
 
   if (getStatus(book.path) === "unread") {
@@ -328,19 +329,66 @@ function openReader(book) {
 
   document.getElementById("reader-title").textContent = book.title;
   document.getElementById("reader-path").textContent = book.path;
-  document.getElementById("download-link").href = book.url;
-  document.getElementById("open-tab-link").href = book.url;
+
+  const downloadLink = document.getElementById("download-link");
+  downloadLink.href = book.url;
+  downloadLink.setAttribute("download", `${book.title}.pdf`);
 
   const finishedBtn = document.getElementById("mark-finished-btn");
   updateFinishedBtn(finishedBtn, book.path);
 
-  const frame = document.getElementById("reader-frame");
-  frame.src = `${book.url}#toolbar=1&view=FitH`;
-
   document.getElementById("reader-overlay").hidden = false;
   document.body.style.overflow = "hidden";
-
   renderShelves();
+  showReaderLoading();
+
+  try {
+    const blobUrl = await getBlobUrl(book);
+    if (currentBook !== book) return; // user closed or switched books mid-fetch
+    document.getElementById("reader-frame").src = blobUrl;
+    document.getElementById("open-tab-link").href = blobUrl;
+    showReaderFrame();
+  } catch (err) {
+    if (currentBook !== book) return;
+    showReaderError(book, err);
+  }
+}
+
+async function getBlobUrl(book) {
+  if (blobCache.has(book.path)) return blobCache.get(book.path);
+
+  const res = await fetch(book.url);
+  if (!res.ok) {
+    throw new Error(`GitHub returned an error (${res.status}) fetching this file.`);
+  }
+  const raw = await res.blob();
+  const pdfBlob = raw.type === "application/pdf" ? raw : new Blob([raw], { type: "application/pdf" });
+  const url = URL.createObjectURL(pdfBlob);
+  blobCache.set(book.path, url);
+  return url;
+}
+
+function showReaderLoading() {
+  document.getElementById("reader-frame").hidden = true;
+  document.getElementById("reader-status").hidden = false;
+  document.getElementById("reader-status").innerHTML = `
+    <div class="spinner" aria-hidden="true"></div>
+    <p>Fetching the pages…</p>
+  `;
+}
+
+function showReaderFrame() {
+  document.getElementById("reader-status").hidden = true;
+  document.getElementById("reader-frame").hidden = false;
+}
+
+function showReaderError(book, err) {
+  document.getElementById("reader-status").hidden = false;
+  document.getElementById("reader-status").innerHTML = `
+    <p class="reader-error-title">Couldn't load this one</p>
+    <p>${escapeHtml(err.message || "Something went wrong fetching the file.")}</p>
+    <a class="btn btn-ghost" href="${book.url}" target="_blank" rel="noopener">Try opening it directly</a>
+  `;
 }
 
 function updateFinishedBtn(btn, path) {
