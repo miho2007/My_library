@@ -458,3 +458,9 @@ body{
 @media (prefers-reduced-motion: reduce){
   .book-card, .spinner, .reader-overlay{ transition:none; animation:none; }
 }
+
+/* Guarantee [hidden] always wins, no matter what display rule a class sets.
+   Without this, .reader-overlay/.reader-status/.controls (which each set
+   display:flex) can tie in specificity with the browser's own [hidden] rule
+   and end up visible when they shouldn't be. */
+[hidden]{ display: none !important; }
